@@ -10,7 +10,7 @@ This is an ASP.NET Core application that demonstrates how to display a list of f
 
 ## Prerequisites
 
-- [.NET 6.0 SDK](https://dotnet.microsoft.com/download/dotnet/8.0)
+- [.NET 8.0 SDK](https://dotnet.microsoft.com/download/dotnet/8.0)
 - A web browser for accessing the application.
 
 ## Getting Started
