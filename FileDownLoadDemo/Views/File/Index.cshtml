@@ -1,0 +1,76 @@
+﻿@model List<FileModel>
+
+@{
+    int count = 0;
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>File List</title>
+</head>
+<body>
+    <h1>Files Lists</h1>
+    <button class="btn btn-primary" id="downloadAll">Download All</button>
+
+    <table id="example" class="table table-responsive">
+        <thead>
+            <tr>
+                <th>No.</th>
+                <th>File Name</th>
+                <th>Download</th>
+                <th>Download</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (FileModel item in Model)
+            {
+                <tr>
+                    <td>@(++count)</td>
+                    <td>@item.FileName</td>
+                    <td><button class="btn btn-primary" onclick="downloadFile('@item.FileName')">Download</button></td>
+                    <td><button class="btn btn-primary" onclick="downloadFileWithAjax('@item.FileName')">DownloadWithAjax</button></td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+</body>
+</html>
+
+@section scripts {
+    <script>
+        $(document).ready(function () {
+            $('#downloadAll').click(function () {
+                window.location.href = '/File/DownloadAll';
+            });
+        });
+
+        function downloadFile(fileName) {
+            window.location.href = `/File/Download?fileName=${fileName}`;
+        }
+
+        function downloadFileWithAjax(fileName) {
+            $.ajax({
+                url: `/File/Download?fileName=${fileName}`,
+                method: 'GET',
+                xhrFields: {
+                    responseType: 'blob'
+                },
+                success: function (data, status, xhr) {
+                    var blob = new Blob([data], { type: 'application/pdf' });
+                    var url = window.URL.createObjectURL(blob);
+                    var a = document.createElement('a');
+                    a.href = url;
+                    a.download = fileName;
+                    document.body.appendChild(a);
+                    a.click();
+                    window.URL.revokeObjectURL(url);
+                },
+                error: function (xhr, status, error) {
+                    console.error('Download failed:', error);
+                }
+            });
+        }
+    </script>
+}
