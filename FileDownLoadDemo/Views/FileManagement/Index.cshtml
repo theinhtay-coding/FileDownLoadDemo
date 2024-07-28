@@ -25,7 +25,7 @@
         </div>
     }
 
-    <h1>Files in Database</h1>
+    <h3>Files in Database</h3>
 
     <form asp-action="Upload" enctype="multipart/form-data" method="post" class="spaced-element">
         <div class="row align-items-center">
@@ -50,7 +50,7 @@
                 <th>No.</th>
                 <th>File Name</th>
                 <th>Download</th>
-                <th>Download</th>
+                <th>DownloadWithAjax</th>
             </tr>
         </thead>
         <tbody>
@@ -60,7 +60,7 @@
                     <td>@(++count)</td>
                     <td>@item.FileName</td>
                     <td><button class="btn btn-primary" onclick="downloadFile('@item.Id')">Download</button></td>
-                    <td><button class="btn btn-primary" onclick="downloadFileWithAjax('@item.Id')">DownloadWithAjax</button></td>
+                    <td><button class="btn btn-primary" onclick="downloadFileWithAjax('@item.Id')">Download</button></td>
                 </tr>
             }
         </tbody>
