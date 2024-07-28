@@ -1,0 +1,152 @@
+﻿@model List<FileEntity>
+
+@{
+    int count = 0;
+    var uploadMessage = TempData["UploadMessage"] as string;
+    var uploadSuccess = TempData["UploadSuccess"] as bool?;
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>File List</title>
+    <style>
+        .spaced-element {
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    @if (!string.IsNullOrEmpty(uploadMessage))
+    {
+
+        <div id="uploadAlert" class="alert @(uploadSuccess == true ? "alert-success" : "alert-danger") spaced-element">
+            @uploadMessage
+        </div>
+    }
+
+    <h1>Files in Database</h1>
+
+    <form asp-action="Upload" enctype="multipart/form-data" method="post" class="spaced-element">
+        <div class="row align-items-center">
+            <div class="mb-3 col-6">
+                <input type="file" name="file" class="form-control" />
+            </div>
+            <div class="mb-3 col-3">
+                <button type="submit" class="btn btn-primary w-100">Upload</button>
+            </div>
+        </div>
+    </form>
+    @* <form id="uploadForm" enctype="multipart/form-data" method="post" class="spaced-element">
+    <input type="file" name="file" />
+    <button type="submit">Upload</button>
+    </form> *@
+
+    <button class="btn btn-primary spaced-element" id="downloadAll">Download All</button>
+
+    <table id="example" class="table table-responsive">
+        <thead>
+            <tr>
+                <th>No.</th>
+                <th>File Name</th>
+                <th>Download</th>
+                <th>Download</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (FileEntity item in Model)
+            {
+                <tr>
+                    <td>@(++count)</td>
+                    <td>@item.FileName</td>
+                    <td><button class="btn btn-primary" onclick="downloadFile('@item.Id')">Download</button></td>
+                    <td><button class="btn btn-primary" onclick="downloadFileWithAjax('@item.Id')">DownloadWithAjax</button></td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+</body>
+</html>
+
+@section scripts {
+    <script>
+        $(document).ready(function () {
+            $('#downloadAll').click(function () {
+                window.location.href = '/FileManagement/DownloadAll';
+            });
+
+            // Hide the upload alert after 3 seconds
+            setTimeout(function () {
+                $('#uploadAlert').fadeOut('slow');
+            }, 2000);
+
+            // $('#uploadForm').submit(function (e) {
+            //     e.preventDefault();
+
+            //     var formData = new FormData(this);
+
+            //     $.ajax({
+            //         url: '/FileManagement/Upload',
+            //         type: 'POST',
+            //         data: formData,
+            //         processData: false,
+            //         contentType: false,
+            //         success: function (response) {
+            //             alert(response.message);
+            //             if (response.success) {
+            //                 // Optionally, refresh the page or update the file list dynamically
+            //                 location.reload();
+            //             }
+            //         },
+            //         error: function (xhr, status, error) {
+            //             alert("An error occurred while uploading the file. Please try again.");
+            //         }
+            //     });
+            // });
+        });
+
+        function downloadFile(id) {
+            window.location.href = `/FileManagement/Download?id=${id}`;
+        }
+
+        function downloadFileWithAjax(id) {
+            $.ajax({
+                url: `/FileManagement/Download?id=${id}`,
+                method: 'GET',
+                xhrFields: {
+                    responseType: 'blob'
+                },
+                success: function (data, status, xhr) {
+                    // var fileName = xhr.getResponseHeader('Content-Disposition').split('filename=')[1];
+                    var contentDisposition = xhr.getResponseHeader('Content-Disposition');
+                    var fileName = getFileNameFromContentDisposition(contentDisposition);
+
+                    var blob = new Blob([data], { type: 'application/pdf' });
+                    var url = window.URL.createObjectURL(blob);
+                    var a = document.createElement('a');
+                    a.href = url;
+                    a.download = fileName;
+                    document.body.appendChild(a);
+                    a.click();
+                    window.URL.revokeObjectURL(url);
+                },
+                error: function (xhr, status, error) {
+                    console.error('Download failed:', error);
+                    alert("File Download Error");
+                }
+            });
+        }
+
+        function getFileNameFromContentDisposition(contentDisposition) {
+            var fileName = "";
+            if (contentDisposition && contentDisposition.indexOf('attachment') !== -1) {
+                var matches = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/.exec(contentDisposition);
+                if (matches != null && matches[1]) {
+                    fileName = matches[1].replace(/['"]/g, '');
+                }
+            }
+            return decodeURIComponent(fileName);
+        }
+    </script>
+}
