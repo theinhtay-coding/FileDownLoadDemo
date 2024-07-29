@@ -3,10 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.10.35013.160
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileDownLoadDemo", "FileDownLoadDemo\FileDownLoadDemo.csproj", "{E9F270DB-AB2A-41E8-B1C9-9ED4F1AC8B42}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FileDownLoadDemo", "FileDownLoadDemo\FileDownLoadDemo.csproj", "{E9F270DB-AB2A-41E8-B1C9-9ED4F1AC8B42}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DOCUMENT", "DOCUMENT", "{EEDBC1DC-35A3-40B9-A040-C76DF08441FB}"
 	ProjectSection(SolutionItems) = preProject
+		FileUploadDemo_Db.sql = FileUploadDemo_Db.sql
 		README.md = README.md
 	EndProjectSection
 EndProject
