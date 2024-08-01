@@ -13,7 +13,11 @@ public class FileController : Controller
         var files = new List<FileModel>
         {
             new FileModel { FileName = "javabook.pdf", FilePath = Path.Combine("Files", "javabook.pdf") },
-            new FileModel { FileName = "csharpbook.pdf", FilePath = Path.Combine("Files", "csharpbook.pdf") }
+            new FileModel { FileName = "csharpbook.pdf", FilePath = Path.Combine("Files", "csharpbook.pdf") },
+            new FileModel { FileName = "bpf.jpeg", FilePath = Path.Combine("Files", "bpf.jpeg") },
+            new FileModel { FileName = "gpf.jpeg", FilePath = Path.Combine("Files", "gpf.jpeg") },
+            new FileModel { FileName = "Lab.doc", FilePath = Path.Combine("Files", "Lab.doc") },
+            new FileModel { FileName = "User.xlsx", FilePath = Path.Combine("Files", "User.xlsx") }
         };
 
         return View(files);
@@ -46,7 +50,11 @@ public class FileController : Controller
         var files = new List<FileModel>
             {
                 new FileModel { FileName = "javabook.pdf", FilePath = Path.Combine("wwwroot", "Files", "javabook.pdf") },
-                new FileModel { FileName = "csharpbook.pdf", FilePath = Path.Combine("wwwroot", "Files", "csharpbook.pdf") }
+                new FileModel { FileName = "csharpbook.pdf", FilePath = Path.Combine("wwwroot", "Files", "csharpbook.pdf") },
+                new FileModel { FileName = "bpf.jpeg", FilePath = Path.Combine("wwwroot", "Files", "bpf.jpeg") },
+                new FileModel { FileName = "gpf.jpeg", FilePath = Path.Combine("wwwroot", "Files", "gpf.jpeg") },
+                new FileModel { FileName = "Lab.doc", FilePath = Path.Combine("wwwroot", "Files", "Lab.doc") },
+                new FileModel { FileName = "User.xlsx", FilePath = Path.Combine("wwwroot", "Files", "User.xlsx") }
             };
 
         var memoryStream = new MemoryStream();
