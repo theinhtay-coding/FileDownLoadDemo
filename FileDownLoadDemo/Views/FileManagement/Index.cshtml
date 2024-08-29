@@ -50,6 +50,7 @@
                 <th>No.</th>
                 <th>File Name</th>
                 <th>Download</th>
+                <th>DownloadWithWindowOpen</th>
                 <th>DownloadWithAjax</th>
             </tr>
         </thead>
@@ -60,6 +61,7 @@
                     <td>@(++count)</td>
                     <td>@item.FileName</td>
                     <td><button class="btn btn-primary" onclick="downloadFile('@item.Id')">Download</button></td>
+                    <td><button class="btn btn-primary" onclick="downloadFileWithOpen('@item.Id')">Download</button></td>
                     <td><button class="btn btn-primary" onclick="downloadFileWithAjax('@item.Id')">Download</button></td>
                 </tr>
             }
@@ -115,6 +117,11 @@
         function downloadFile(id) {
             window.location.href = `/FileManagement/Download?id=${id}`;
         }
+
+        function downloadFileWithOpen(id) {
+            window.open(`/FileManagement/Download?id=${id}`);
+        }
+
 
         function downloadFileWithAjax(id) {
             $.ajax({
