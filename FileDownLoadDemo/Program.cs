@@ -1,4 +1,5 @@
 using FileDownLoadDemo;
+using FileDownLoadDemo.Middleware;
 using FileDownLoadDemo.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
@@ -53,6 +54,8 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
+
+app.UseMiddleware<CustomHeadersMiddleware>();
 
 app.UseRouting();
 

@@ -1,4 +1,5 @@
 ﻿using FileDownLoadDemo.Models;
+using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.IO.Compression;
@@ -65,7 +66,7 @@ public class FileManagementController : Controller
     }
 
     [HttpGet]
-    public async Task<IActionResult> Download(int id)
+    public async Task<IActionResult> Download_bk(int id)
     {
         var file = await _context.Files.FindAsync(id);
 
@@ -75,6 +76,77 @@ public class FileManagementController : Controller
         }
 
         return File(file.FileContent, "application/pdf; charset=utf-8", file.FileName);
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> Download_bk1(int id)
+    {
+        var file = await _context.Files.FindAsync(id);
+
+        if (file == null)
+        {
+            return NotFound();
+        }
+
+        var stream = new MemoryStream(file.FileContent);
+
+        // Return FileStreamResult to enable streaming
+        return new FileStreamResult(stream, "application/pdf; charset=utf-8")
+        {
+            FileDownloadName = file.FileName
+        };
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> Download(int id)
+    {
+        var file = await _context.Files.FindAsync(id);
+
+        if (file == null)
+        {
+            return NotFound();
+        }
+
+        Response.Headers.Remove("Content-Length"); // Ensure Content-Length is not set
+        Response.Headers.Add("Content-Disposition", $"attachment; filename={file.FileName}");
+        Response.Headers.Add("Content-Type", "application/pdf; charset=utf-8");
+
+        // Write file content directly to the response stream
+        using (var stream = new MemoryStream(file.FileContent))
+        {
+            await stream.CopyToAsync(Response.Body);
+        }
+
+        return new EmptyResult(); // We're writing the response manually, so return an empty result
+    }
+
+
+    [HttpGet]
+    public async Task<IActionResult> Download_bk2(int id)
+    {
+        var file = await _context.Files.FindAsync(id);
+
+        if (file == null)
+        {
+            return NotFound();
+        }
+
+        // Disable response buffering to encourage chunked transfer encoding
+        HttpContext.Features.Get<IHttpResponseBodyFeature>()?.DisableBuffering();
+
+        // Adding custom headers
+        HttpContext.Response.Headers.Append("Cache-Control", "no-cache");
+        HttpContext.Response.Headers.Append("Cache-Control", "no-store");
+        HttpContext.Response.Headers.Append("Pragma", "no-cache");
+        HttpContext.Response.Headers.Append("Strict-Transport-Security", "max-age=31536000;includeSubDomains");
+        HttpContext.Response.Headers.Append("Via", "HTTP/1.1 Inner_Proxy_WK,HTTP/1.1 Outer_Proxy_WK");
+        HttpContext.Response.Headers.Append("X-Content-Type-Options", "nosniff");
+        HttpContext.Response.Headers.Append("X-Nom-Cp-Id", "WM/ePlatform");
+        HttpContext.Response.Headers.Append("X-Xss-Protection", "1; mode=block");
+
+        // Stream the file content
+        var stream = new MemoryStream(file.FileContent);
+        return File(stream, "application/pdf; charset=utf-8", file.FileName);
     }
 
     [HttpGet]
